@@ -42,7 +42,7 @@ const itemSchema = new mongoose.Schema({
     parentCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        required: false
+        required: true
     },
     parentSubCategory: {
         type: mongoose.Schema.Types.ObjectId,
