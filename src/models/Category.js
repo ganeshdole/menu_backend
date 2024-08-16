@@ -23,14 +23,14 @@ const categorySchema = new mongoose.Schema({
     },
     tax: {
         type: Number,
-        required : function(){
+        required: function() {
             return this.taxApplicability;
         },
         default: null
     },
     taxType: {
         type: String,
-        required : function(){
+        required: function() {
             return this.taxApplicability;
         },
         default: null,
@@ -39,6 +39,10 @@ const categorySchema = new mongoose.Schema({
     subCategories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SubCategory'
+    }],
+    items: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item'
     }]
 });
 
