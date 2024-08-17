@@ -55,7 +55,7 @@ Before you begin, ensure you have met the following requirements:
 - **Create Category**: `POST /categories`
 - **Get All Categories**: `GET /categories`
 - **Get Category by ID**: `GET /categories/:id`
-- **Update Category**: `PUT /categories/:id`
+- **Update Category**: `PATCH /categories/:id`
 
 ### Subcategories
 
@@ -63,12 +63,11 @@ Before you begin, ensure you have met the following requirements:
 - **Get All Subcategories**: `GET /subcategories`
 - **Get Subcategories by Parent Category**: `GET /subcategories/by-category`
 - **Get Subcategory by ID**: `GET /subcategories/:id`
-- **Update Subcategory**: `PUT /subcategories/:id`
-- **Delete Subcategory**: `DELETE /subcategories/:id`
+- **Update Subcategory**: `PATCH /subcategories/:id`
 
 ### Items
 
 - **Create Item**: `POST /items`
 - **Get All Items**: `GET /items`
 - **Get Item by ID**: `GET /items/:id`
-- **Update Item**: `PUT /items/:id`
+- **Update Item**: `PATCH /items/:id`
