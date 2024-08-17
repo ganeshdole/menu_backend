@@ -7,7 +7,7 @@ router.get("/", getItem)
 router.get('/all',getAllItem);
 router.get("/by-category",getItemByParentCategory)
 router.get("/by-sub-category", getItemByParentSubCategory)
-router.patch("/update", updateItem)
+router.patch("/update/:id", updateItem)
 
 
 module.exports = router;
