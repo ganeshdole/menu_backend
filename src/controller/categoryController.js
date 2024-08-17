@@ -26,11 +26,11 @@ const createCategory = async (req, res) => {
         const savedCategory = await newCategory.save();
 
         // Respond with the created category
-        res.status(200).json(createSuccess(savedCategory));     
+        return res.status(200).json(createSuccess(savedCategory));     
     } catch (error) {
         // Handle any errors that occur
         console.error("Error creating category:", error);
-        res.status(500).json(createError("Failed to create category"));
+       return res.status(500).json(createError("Failed to create category"));
     }
 };
 
@@ -41,7 +41,7 @@ const getAllCategory= async(req, res) =>{
     return res.status(200).json(createSuccess(categories));
    }catch(error){
     console.error("Error  getting category",error);
-    res.status(500).json(createError("Failed to create category"));
+    return res.status(500).json(createError("Failed to create category"));
    }
 }
 
@@ -63,12 +63,30 @@ const getCategory = async (req, res) => {
             return res.status(404).json(createError("Category not found!"));
         }
 
-        res.status(200).json(createSuccess(category));
+        return res.status(200).json(createSuccess(category));
     } catch (error) {
         console.error("Error getting category", error);
         return res.status(500).json(createError("Failed to get category"));
     }
 };
 
+const updateCategory = async (req, res) => {
+    try{    
+        const _id = req.params.id;
+        const body = req.body;
 
-module.exports = { createCategory, getAllCategory, getCategory };
+        let category = await Category.findById(_id);
+        if (!category) {
+            return res.status(404).json(createError("Item not found!"));
+        }
+
+        category = await Category.findByIdAndUpdate(_id, body, { new: true });
+
+        return res.status(200).json(createSuccess({ message: "Item update successful", category }));
+    }catch(error){
+        console.error("Error Updaing Sub-Categoryftrrs",error);
+        return res.status(500).json(createError("Failed to update Sub-category"));
+    }
+}
+
+module.exports = { createCategory, getAllCategory, getCategory,updateCategory };

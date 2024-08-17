@@ -4,6 +4,8 @@ const Item = require('../models/Item');
 const createError = require('../utils/errorHandling');
 const createSuccess = require('../utils/successHandling');
 
+// Create a new item under a specified category or sub-category.
+
 const createItem = async (req, res) => {
     try {
         const {
@@ -66,22 +68,28 @@ const createItem = async (req, res) => {
         return res.status(201).json(createSuccess(savedItem));
     } catch (error) {
         console.error("Error creating item:", error);
-        res.status(500).json(createError("Failed to create item"));
+       return res.status(500).json(createError("Failed to create item"));
     }
 };
 
-const getAllItem= async(req, res) =>{
-    try{
-     const categories = await Item.find({});
-     return res.status(200).json(createSuccess(categories));
-    }catch(error){
-     console.error("Error  getting Item's",error);
-     res.status(500).json(createError("Failed to All Item's"));
-    }
- }
 
-const getItemByParentCategory = async (req, res) =>{
-    try{
+// Retrieve all items from the database.
+
+const getAllItem = async (req, res) => {
+    try {
+        const items = await Item.find({});
+        return res.status(200).json(createSuccess(items));
+    } catch (error) {
+        console.error("Error getting items:", error);
+        return res.status(500).json(createError("Failed to retrieve items"));
+    }
+};
+
+
+// Retrieve items by parent category.
+ 
+const getItemByParentCategory = async (req, res) => {
+    try {
         const search = {};
         const { name = null, id = null } = req.query;
         if (!name && !id) {
@@ -90,30 +98,31 @@ const getItemByParentCategory = async (req, res) =>{
 
         if (name) search["name"] = name;
         if (id) search["_id"] = id;
-        console.log(search)
-        const category = await Category.findOne(search)
+
+        const category = await Category.findOne(search);
 
         if (!category) {
             return res.status(404).json(createError("Parent Category not found!"));
         }
 
-        const Items = await Item.find({
-            parentCategory : String(category._id)
-        })
+        const items = await Item.find({ parentCategory: String(category._id) });
 
-        if(!Items){
-            return res.status(200).json(createSuccess("No Item Found"));
+        if (items.length === 0) {
+            return res.status(200).json(createSuccess("No items found"));
         }
 
-        return res.status(200).json(createSuccess(Items));
-    }catch(error){
-        console.error("Error  getting Item's",error);
-        res.status(500).json(createError("Failed to create Item's"));
+        return res.status(200).json(createSuccess(items));
+    } catch (error) {
+        console.error("Error getting items by parent category:", error);
+        return res.status(500).json(createError("Failed to retrieve items"));
     }
-} 
+};
 
-const getItemByParentSubCategory = async(req, res) =>{
-    try{
+
+// Retrieve items by parent sub-category.
+
+const getItemByParentSubCategory = async (req, res) => {
+    try {
         const search = {};
         const { name = null, id = null } = req.query;
         if (!name && !id) {
@@ -122,28 +131,31 @@ const getItemByParentSubCategory = async(req, res) =>{
 
         if (name) search["name"] = name;
         if (id) search["_id"] = id;
-        const subCategory = await SubCategory.findOne(search)
+
+        const subCategory = await SubCategory.findOne(search);
+
         if (!subCategory) {
-            return res.status(404).json(createError("Parent Category not found!"));
+            return res.status(404).json(createError("Parent Sub-Category not found!"));
         }
 
-        const Items = await Item.find({
-            parentSubCategory : String(subCategory._id)
-        })
+        const items = await Item.find({ parentSubCategory: String(subCategory._id) });
 
-        if(!Items){
-            return res.status(200).json(createSuccess("No Item Found"));
+        if (items.length === 0) {
+            return res.status(200).json(createSuccess("No items found"));
         }
 
-        return res.status(200).json(createSuccess(Items));
-    }catch(error){
-        console.error("Error  getting Item's",error);
-        res.status(500).json(createError("Failed to Get Item's"));
+        return res.status(200).json(createSuccess(items));
+    } catch (error) {
+        console.error("Error getting items by parent sub-category:", error);
+        return res.status(500).json(createError("Failed to retrieve items"));
     }
-}
+};
 
-const getItem = async (req, res) =>{
-    try{
+
+// Retrieve an item by its ID or name.
+
+const getItem = async (req, res) => {
+    try {
         const search = {};
 
         const { name = null, id = null } = req.query;
@@ -160,12 +172,40 @@ const getItem = async (req, res) =>{
             return res.status(404).json(createError("Item not found!"));
         }
 
-        res.status(200).json(createSuccess(item));
-    }catch(error){
-        console.error("Error  getting Item's",error);
-        res.status(500).json(createError("Failed to Get Item's"));
+        return res.status(200).json(createSuccess(item));
+    } catch (error) {
+        console.error("Error getting item:", error);
+        return res.status(500).json(createError("Failed to retrieve item"));
     }
-}
+};
+
+
+// Update an existing item by its ID.
+
+const updateItem = async (req, res) => {
+    try {
+        const _id = req.params.id;
+        const body = req.body;
+
+        let item = await Item.findById(_id);
+        if (!item) {
+            return res.status(404).json(createError("Item not found!"));
+        }
+
+        item = await Item.findByIdAndUpdate(_id, body, { new: true });
+
+        return res.status(200).json(createSuccess({ item, message: "Item update successful" }));
+    } catch (error) {
+        console.error("Error updating item:", error);
+        return res.status(500).json(createError("Failed to update item"));
+    }
+};
+
 module.exports = {
-    createItem,getAllItem,getItemByParentCategory, getItemByParentSubCategory,getItem
+    createItem,
+    getAllItem,
+    getItemByParentCategory,
+    getItemByParentSubCategory,
+    getItem,
+    updateItem
 };

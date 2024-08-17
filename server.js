@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 app.get("/ping",(req, res)=>{
-    res.send("pong")
+   return res.send("pong")
 })
 // Use the router for handling API requests under the /api route
 app.use('/api', router);

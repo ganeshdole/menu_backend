@@ -44,7 +44,7 @@ const createSubCategory = async (req, res) => {
         return res.status(200).json(createSuccess(savedSubCategory));
     } catch (error) {
         console.error("Error creating sub-category:", error);
-        res.status(500).json(createError("Failed to create sub-category"));
+       return res.status(500).json(createError("Failed to create sub-category"));
     }
 };
 
@@ -55,7 +55,7 @@ const getAllSubCategory= async(req, res) =>{
      return res.status(200).json(createSuccess(categories));
     }catch(error){
      console.error("Error getting Sub-categories",error);
-     res.status(500).json(createError("Failed to getting Sub-categories"));
+     return res.status(500).json(createError("Failed to getting Sub-categories"));
     }
  }
 const getSubCategoriesByParentCategory = async(req, res) =>{
@@ -79,12 +79,12 @@ const getSubCategoriesByParentCategory = async(req, res) =>{
             parentCategory : String(category._id),
         })
         if(!subCategories){
-            res.status(200).json(createSuccess("No Sub Category Found"));
+            return res.status(200).json(createSuccess("No Sub Category Found"));
         }
-        res.status(200).json(createSuccess(subCategories));
+        return res.status(200).json(createSuccess(subCategories));
     }catch(error){
         console.error("Error getting Sub-categories",error);
-        res.status(500).json(createError("Failed to getting Sub-categories"));
+        return res.status(500).json(createError("Failed to getting Sub-categories"));
     }
 }
 
@@ -107,13 +107,33 @@ const getSubCategory = async (req, res)=>{
             return res.status(404).json(createError("Sub-Category not found!"));
         }
 
-        res.status(200).json(createSuccess(category));
+        return res.status(200).json(createSuccess(category));
     }catch(error){
         console.error("Error getting Sub-category",error);
-        res.status(500).json(createError("Failed to get Sub-category"));
+        return res.status(500).json(createError("Failed to get Sub-category"));
     }
 }
 
+const updateSubCategory = async (req, res) => {
+    try{    
+        const _id = req.params.id;
+        const body = req.body;
+
+        let subCategory = await SubCategory.findById(_id);
+        if (!subCategory) {
+            return res.status(404).json(createError("Item not found!"));
+        }
+
+        subCategory = await SubCategory.findByIdAndUpdate(_id, body, { new: true });
+
+        return res.status(200).json(createSuccess({ message: "Item update successful", subCategory }));
+    }catch(error){
+        console.error("Error Updaing Sub-Categoryftrrs",error);
+        return res.status(500).json(createError("Failed to update Sub-category"));
+    }
+}
+
+
 module.exports = {
-    createSubCategory, getAllSubCategory, getSubCategory,getSubCategoriesByParentCategory
+    createSubCategory, getAllSubCategory, getSubCategory,getSubCategoriesByParentCategory, updateSubCategory
 };
