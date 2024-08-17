@@ -4,8 +4,7 @@ const Item = require('../models/Item');
 const createError = require('../utils/errorHandling');
 const createSuccess = require('../utils/successHandling');
 
-// Create a new item under a specified category or sub-category.
-
+// Create a new item under a specified category or sub-category
 const createItem = async (req, res) => {
     try {
         const {
@@ -72,9 +71,7 @@ const createItem = async (req, res) => {
     }
 };
 
-
-// Retrieve all items from the database.
-
+// Retrieve all items from the database
 const getAllItem = async (req, res) => {
     try {
         const items = await Item.find({});
@@ -85,13 +82,13 @@ const getAllItem = async (req, res) => {
     }
 };
 
-
-// Retrieve items by parent category.
- 
+// Retrieve items by parent category
 const getItemByParentCategory = async (req, res) => {
     try {
         const search = {};
         const { name = null, id = null } = req.query;
+
+        // Validate required fields for search
         if (!name && !id) {
             return res.status(400).json(createError("One of ID or Name is required"));
         }
@@ -99,12 +96,13 @@ const getItemByParentCategory = async (req, res) => {
         if (name) search["name"] = name;
         if (id) search["_id"] = id;
 
+        // Find the category by name or ID
         const category = await Category.findOne(search);
-
         if (!category) {
             return res.status(404).json(createError("Parent Category not found!"));
         }
 
+        // Retrieve items belonging to the category
         const items = await Item.find({ parentCategory: String(category._id) });
 
         if (items.length === 0) {
@@ -118,13 +116,13 @@ const getItemByParentCategory = async (req, res) => {
     }
 };
 
-
-// Retrieve items by parent sub-category.
-
+// Retrieve items by parent sub-category
 const getItemByParentSubCategory = async (req, res) => {
     try {
         const search = {};
         const { name = null, id = null } = req.query;
+
+        // Validate required fields for search
         if (!name && !id) {
             return res.status(400).json(createError("One of ID or Name is required"));
         }
@@ -132,12 +130,13 @@ const getItemByParentSubCategory = async (req, res) => {
         if (name) search["name"] = name;
         if (id) search["_id"] = id;
 
+        // Find the sub-category by name or ID
         const subCategory = await SubCategory.findOne(search);
-
         if (!subCategory) {
             return res.status(404).json(createError("Parent Sub-Category not found!"));
         }
 
+        // Retrieve items belonging to the sub-category
         const items = await Item.find({ parentSubCategory: String(subCategory._id) });
 
         if (items.length === 0) {
@@ -151,14 +150,13 @@ const getItemByParentSubCategory = async (req, res) => {
     }
 };
 
-
-// Retrieve an item by its ID or name.
-
+// Retrieve an item by its ID or name
 const getItem = async (req, res) => {
     try {
         const search = {};
-
         const { name = null, id = null } = req.query;
+
+        // Validate required fields for search
         if (!name && !id) {
             return res.status(400).json(createError("One of ID or Name is required"));
         }
@@ -166,8 +164,8 @@ const getItem = async (req, res) => {
         if (name) search["name"] = name;
         if (id) search["_id"] = id;
 
+        // Find the item by name or ID
         const item = await Item.findOne(search);
-
         if (!item) {
             return res.status(404).json(createError("Item not found!"));
         }
@@ -179,19 +177,19 @@ const getItem = async (req, res) => {
     }
 };
 
-
-// Update an existing item by its ID.
-
+// Update an existing item by its ID
 const updateItem = async (req, res) => {
     try {
         const _id = req.params.id;
         const body = req.body;
 
+        // Check if item exists
         let item = await Item.findById(_id);
         if (!item) {
             return res.status(404).json(createError("Item not found!"));
         }
 
+        // Update the item
         item = await Item.findByIdAndUpdate(_id, body, { new: true });
 
         return res.status(200).json(createSuccess({ item, message: "Item update successful" }));

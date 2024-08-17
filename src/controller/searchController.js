@@ -7,20 +7,20 @@ const Search = async (req, res) => {
     try {
         const { name } = req.query;
 
-        // Check if name query parameter is provided
+        // Check if the name query parameter is provided
         if (!name) {
             return res.status(404).json(createError("Item Name Required"));
         }
 
-        // Search for the item by name
+        // Search for the item by its name in the database
         const item = await Item.findOne({ name });
 
-        // If item not found, return a success message with no results
+        // If the item is not found, return a success message indicating no results
         if (!item) {
             return res.status(200).json(createSuccess("Item does not exist!"));
         }
 
-        // Return the found item
+        // If the item is found, return it in the response
         return res.status(200).json(createSuccess({
             message: "Search Result",
             item
