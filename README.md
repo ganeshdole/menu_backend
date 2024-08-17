@@ -22,8 +22,8 @@ Before you begin, ensure you have met the following requirements:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/your-repository.git
-   cd your-repository
+   git clone https://github.com/ganeshdole/menu_backend.git
+   cd menu_backend
    ```
 
 2. **Install Dependencies**
